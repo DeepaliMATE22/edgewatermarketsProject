@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 
-const MatchView = () => {
-  const [matches, setMatches] = useState([]);
+interface Match {
+  timestamp: string;
+  product: string;
+  side: 'buy' | 'sell';
+  size: number;
+  price: number;
+}
+
+const MatchView: React.FC = () => {
+  const [matches, setMatches] = useState<Match[]>([]);
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:3001');
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data);
       if (data.type === 'matches') {
-        setMatches(prevMatches => [...prevMatches, data]);
+        setMatches((prevMatches) => [...prevMatches, data]);
       }
     };
   }, []);
